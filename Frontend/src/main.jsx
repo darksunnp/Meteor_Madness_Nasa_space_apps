@@ -1,13 +1,16 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.jsx'
 import Globe from './Components/globe.jsx'
+import SimpleToggleSidebar from './Components/Sidebar'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <div style={{ position: 'absolute', top: 0, left: 0, zIndex: 1, padding: '10px', backgroundColor: 'rgba(0, 0, 0)' }}>
-    <Globe />
+    <div className="absolute top-4 left-0 bg-white bg-opacity-75 p-2 rounded shadow z-10">
+    <SimpleToggleSidebar />
     </div>
+    <Globe />
+    
+    
   </StrictMode>,
 )

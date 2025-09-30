@@ -2,11 +2,16 @@
 import { useEffect, useRef } from "react";
 import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
+import SimpleToggleSidebar from "./Sidebar";
+import useAsteroidStore from "../other/useAsteroidStore";
 
 Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_TOKEN;
 
 export default function MeteorLauncher() {
   const viewerRef = useRef(null);
+  
+  const setLaunched = useAsteroidStore((state) => state.setLaunched);
+ 
 
   useEffect(() => {
     if (!viewerRef.current) return;
@@ -45,46 +50,26 @@ export default function MeteorLauncher() {
 
     // Launch meteor with realistic trail & effects
     function launchMeteor(lon, lat) {
-      const startHeight = 1000000; // 100 km
+      const startHeight = 1000000; // 1000 km
       let height = startHeight;
       let speed = 6000; // meters per frame (will increase with atmospheric entry)
       const trailPoints = []; // Store trail history for realistic fading
       const maxTrailPoints = 60;
 
-      // Create the meteor with PNG texture (simple approach)
+      // Create the meteor with 3D GLB model
       const meteor = viewer.entities.add({
         position: Cesium.Cartesian3.fromDegrees(lon, lat, height),
-        billboard: {
-          // Option 1: Use a meteor PNG from online source
-          image: './meteor.png',
-          
-          // Option 2: If you have your own PNG, just replace with your path:
-          // image: './assets/meteor.png',
-          
-          scale: 100, // Fixed small size
-          sizeInMeters: true, // Make size relative to world coordinates
-          scaleByDistance: new Cesium.NearFarScalar(1000, 1.0, 100000, 0.1), // Scale with camera distance
-          
-          // Add some color tinting for heat effect
-          color: new Cesium.CallbackProperty(() => {
-            const atmosphereHeight = 80000;
-            if (height < atmosphereHeight) {
-              const heatFactor = 1 - (height / atmosphereHeight);
-              const intensity = 0.8 + Math.random() * 0.2;
-              return new Cesium.Color(
-                1.0,
-                0.8 + (heatFactor * 0.2),
-                0.6 + (heatFactor * 0.4),
-                intensity
-              );
-            }
-            return Cesium.Color.WHITE;
-          }, false),
-          
-          pixelOffset: new Cesium.Cartesian2(0, 0),
-          horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-          verticalOrigin: Cesium.VerticalOrigin.CENTER,
+        model: {
+          uri: './asteroid_1.glb', // Path to your GLB file
+          scale: 12000, // Initial scale
          
+          
+          
+  
+
+          
+      
+           
         }
       });
 
@@ -229,6 +214,7 @@ export default function MeteorLauncher() {
           
           // Simple light zoom to crater after impact
           setTimeout(() => {
+            setLaunched((prev) => !prev);
             viewer.camera.flyTo({
               destination: Cesium.Cartesian3.fromDegrees(lon, lat, 350000),
               orientation: {
@@ -255,6 +241,7 @@ export default function MeteorLauncher() {
       animate();
     }
 
+
     // Handle globe clicks
     const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
     handler.setInputAction(function (click) {
@@ -267,14 +254,24 @@ export default function MeteorLauncher() {
         const longitude = Cesium.Math.toDegrees(cartographic.longitude);
         const latitude = Cesium.Math.toDegrees(cartographic.latitude);
         launchMeteor(longitude, latitude);
+        
+      
+        
+       
+
       }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
 
     return () => {
       handler.destroy();
       viewer.destroy();
-    };
-  }, []);
 
-  return <div ref={viewerRef} style={{ width: "100%", height: "100vh" }} />;
+    };
+  }, );
+
+  return (
+  <div>
+  <div ref={viewerRef} style={{ width: "100%", height: "100vh" }} />
+    </div>
+  );
 }

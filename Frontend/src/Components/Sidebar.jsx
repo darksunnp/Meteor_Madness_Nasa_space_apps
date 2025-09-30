@@ -1,0 +1,44 @@
+import { useState,useEffect } from "react";
+import AsteroidDetails from "./AsteroidDetails";
+import ImpactAnalysis from "./ImpactAnalysis";
+import Globe from "./globe.jsx";
+import useAsteroidStore from "../other/useAsteroidStore";
+
+export default function SimpleToggleSidebar() {
+    const [open, setOpen] = useState(true);
+     const launched = useAsteroidStore((state) => state.launched);
+
+    useEffect(() => {
+    if (launched && open) {
+      setOpen(!open)
+
+    } else {
+      console.log("Simulation reset.");
+    }
+  }, [launched]);
+
+
+ 
+
+    return (
+        <div className="flex">
+
+            <aside className={`h-screen bg-neutral-800 text-neutral-100 transition-all duration-300 overflow-y-auto top-0 ${open ? "w-98" : "w-0"}`}>
+
+                <AsteroidDetails />
+
+                <ImpactAnalysis />
+
+            </aside>
+
+            <button
+                className={`fixed top-0 left-0 h-screen p-2 bg-neutral-900 hover:bg-neutral-700 text-neutral-100 rounded-r transition-all duration-300 w-12 ${open ? "left-98" : "left-0"}`}
+                onClick={() => setOpen(!open)  
+                }
+
+            >
+                {open ? '<' : '>'}
+            </button>
+        </div>
+    );
+}
