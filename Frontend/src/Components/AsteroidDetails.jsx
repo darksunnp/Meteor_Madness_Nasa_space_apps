@@ -1,11 +1,11 @@
 import useAsteroidStore from '../other/useAsteroidStore';
 import OrbitSimulation from './orbit';
-import { useState } from 'react';
+
 
 function AsteroidDetails() {
     const {
         type, speed, xdistance,ydistance,zdistance, size,
-        setType, setSpeed, setX,setY,setZ, setSize,
+        setType, setSpeed, setX,setY,setZ, setSize, setLaunched
     } = useAsteroidStore();
 
     const handleNumberInput = (setter) => (e) => {
@@ -26,10 +26,11 @@ function AsteroidDetails() {
         }
     }
 
-     const [orbitKey, setOrbitKey] = useState(0);
+     // const [orbitKey, setOrbitKey] = useState(0);
 
   const handleRunSimulation = () => {
-    setOrbitKey(prev => prev + 1); // remount OrbitSimulation
+    // setOrbitKey(prev => prev + 1); // remount OrbitSimulation
+    setLaunched(true);
   };
 
     return (
@@ -134,13 +135,7 @@ function AsteroidDetails() {
                     </div>
                 </form>
             </div>
-            <OrbitSimulation
-        key={orbitKey}
-        xdistance={xdistance}
-  ydistance={ydistance}
-  zdistance={zdistance}
-        
-      />
+            <OrbitSimulation />
         </div>
     );
 }

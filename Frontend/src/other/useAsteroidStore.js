@@ -6,7 +6,7 @@ const useAsteroidStore = create((set) => ({
     distance: '',
     size: '',
     damage: '',
-    launched: false,
+    launched: true,
     xdistance: 100,
     ydistance: 50,
     zdistance: 0,

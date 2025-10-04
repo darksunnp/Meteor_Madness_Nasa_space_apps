@@ -4,13 +4,20 @@ import useAsteroidStore from "../other/useAsteroidStore";
 
 export default function OrbitSimulation() {
 
-  const { xdistance, ydistance, zdistance } = useAsteroidStore();
+  const { xdistance, ydistance, zdistance, launched, setLaunched } = useAsteroidStore();
   const mountRef = useRef(null);
   const [impactTime, setImpactTime] = useState('—');
   const [impactLoc, setImpactLoc] = useState('—');
-   const initPos = [Number(xdistance), Number(ydistance), Number(zdistance)];
+
+  const initPos = [Number(xdistance), Number(ydistance), Number(zdistance)];
   const initVel = [0, 1000, 0];
+
   useEffect(() => {
+
+    if (!launched) return; // only run when launched is true
+
+    console.log("Starting simulation with:", initPos);
+
     // Constants
     const G = 6.674e-11;
     const dt = 100;
@@ -43,7 +50,7 @@ export default function OrbitSimulation() {
     let isDragging = false;
     let previousMousePosition = { x: 0, y: 0 };
     let cameraDistance = Math.sqrt(
-      camera.position.x**2 + camera.position.y**2 + camera.position.z**2
+      camera.position.x ** 2 + camera.position.y ** 2 + camera.position.z ** 2
     );
 
     const onMouseDown = (e) => {
@@ -53,22 +60,22 @@ export default function OrbitSimulation() {
 
     const onMouseMove = (e) => {
       if (!isDragging) return;
-      
+
       const deltaX = e.clientX - previousMousePosition.x;
       const deltaY = e.clientY - previousMousePosition.y;
-      
+
       const rotationSpeed = 0.005;
       const phi = Math.atan2(camera.position.z, camera.position.x);
       const theta = Math.acos(camera.position.y / cameraDistance);
-      
+
       const newPhi = phi - deltaX * rotationSpeed;
       const newTheta = Math.max(0.1, Math.min(Math.PI - 0.1, theta + deltaY * rotationSpeed));
-      
+
       camera.position.x = cameraDistance * Math.sin(newTheta) * Math.cos(newPhi);
       camera.position.y = cameraDistance * Math.cos(newTheta);
       camera.position.z = cameraDistance * Math.sin(newTheta) * Math.sin(newPhi);
       camera.lookAt(0, 0, 0);
-      
+
       previousMousePosition = { x: e.clientX, y: e.clientY };
     };
 
@@ -80,13 +87,13 @@ export default function OrbitSimulation() {
       e.preventDefault();
       const zoomSpeed = 0.1;
       cameraDistance += e.deltaY * zoomSpeed;
-     
-      
+
+
       const phi = Math.atan2(camera.position.z, camera.position.x);
       const theta = Math.acos(camera.position.y / Math.sqrt(
-        camera.position.x**2 + camera.position.y**2 + camera.position.z**2
+        camera.position.x ** 2 + camera.position.y ** 2 + camera.position.z ** 2
       ));
-      
+
       camera.position.x = cameraDistance * Math.sin(theta) * Math.cos(phi);
       camera.position.y = cameraDistance * Math.cos(theta);
       camera.position.z = cameraDistance * Math.sin(theta) * Math.sin(phi);
@@ -125,7 +132,7 @@ export default function OrbitSimulation() {
     function updateTrail(newPos) {
       trailPoints.push(new THREE.Vector3(...newPos));
       if (trailPoints.length > 500) trailPoints.shift();
-      
+
       // Dispose old geometry and create new one
       trailGeometry.dispose();
       trailGeometry = new THREE.BufferGeometry();
@@ -158,8 +165,8 @@ export default function OrbitSimulation() {
 
     function acceleration(pos) {
       const posMeters = pos.map(p => p * scaleFactor);
-      const r = Math.sqrt(posMeters[0]**2 + posMeters[1]**2 + posMeters[2]**2);
-      const factor = -G * massEarth / (r**3);
+      const r = Math.sqrt(posMeters[0] ** 2 + posMeters[1] ** 2 + posMeters[2] ** 2);
+      const factor = -G * massEarth / (r ** 3);
       return posMeters.map(x => factor * x);
     }
 
@@ -180,8 +187,8 @@ export default function OrbitSimulation() {
       const k4_r = vel.map((v, i) => (v + k3_v[i]) * dt);
       const k4_v = a4.map(a => a * dt);
 
-      const newPos = pos.map((p, i) => p + (k1_r[i] + 2*k2_r[i] + 2*k3_r[i] + k4_r[i]) / (6 * scaleFactor));
-      const newVel = vel.map((v, i) => v + (k1_v[i] + 2*k2_v[i] + 2*k3_v[i] + k4_v[i]) / 6);
+      const newPos = pos.map((p, i) => p + (k1_r[i] + 2 * k2_r[i] + 2 * k3_r[i] + k4_r[i]) / (6 * scaleFactor));
+      const newVel = vel.map((v, i) => v + (k1_v[i] + 2 * k2_v[i] + 2 * k3_v[i] + k4_v[i]) / 6);
 
       return [newPos, newVel];
     }
@@ -192,13 +199,13 @@ export default function OrbitSimulation() {
 
     function animate() {
       animationFrameId = requestAnimationFrame(animate);
-      
+
       if (simulationRunning) {
         [posAst, velAst] = rk4(posAst, velAst);
         asteroid.position.set(...posAst);
         updateTrail(posAst);
 
-        const dist = Math.sqrt(posAst[0]**2 + posAst[1]**2 + posAst[2]**2);
+        const dist = Math.sqrt(posAst[0] ** 2 + posAst[1] ** 2 + posAst[2] ** 2);
         if (dist <= radEarth + radAst) {
           setImpactTime(t.toFixed(2));
 
@@ -215,7 +222,7 @@ export default function OrbitSimulation() {
           t += dt;
         }
       }
-      
+
       renderer.render(scene, camera);
     }
 
@@ -232,8 +239,9 @@ export default function OrbitSimulation() {
         mountRef.current.removeChild(renderer.domElement);
       }
       renderer.dispose();
+      setLaunched(false);
     };
-  }, []);
+  }, [xdistance, ydistance, zdistance, launched]);
 
   return (
     <div className="relative w-full h-screen">
