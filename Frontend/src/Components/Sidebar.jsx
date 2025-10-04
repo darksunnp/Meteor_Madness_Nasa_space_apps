@@ -21,7 +21,7 @@ export default function SimpleToggleSidebar() {
  
 
     return (
-        <div className="flex">
+        <div className="flex fixed top-0 left-0 z-20">
 
             <aside className={`h-screen bg-neutral-800 text-neutral-100 transition-all duration-300 overflow-y-auto top-0 ${open ? "w-98" : "w-0"}`}>
 

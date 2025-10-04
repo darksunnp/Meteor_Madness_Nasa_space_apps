@@ -7,6 +7,9 @@ const useAsteroidStore = create((set) => ({
     size: '',
     damage: '',
     launched: false,
+    xdistance: 100,
+    ydistance: 50,
+    zdistance: 0,
 
     setType: (type) => set({ type }),
     setSpeed: (speed) => set({ speed }),
@@ -14,6 +17,9 @@ const useAsteroidStore = create((set) => ({
     setSize: (size) => set({ size }),
     setDamage: (damage) => set({ damage }),
     setLaunched: (launched) => set({ launched }),
+    setX: (xdistance) => set({ xdistance }),
+    setY: (ydistance) => set({ ydistance }),
+    setZ: (zdistance) => set({ zdistance }),
 
     runSimulation: () =>
         set((state) => {
