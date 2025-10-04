@@ -5,11 +5,12 @@ import OrbitSimulation from './orbit';
 function AsteroidDetails() {
     const {
         type, speed, xdistance,ydistance,zdistance, size,
-        setType, setSpeed, setX,setY,setZ, setSize, setLaunched
+        setType, setSpeed, setX,setY,setZ, setSize, setLaunched2,launched2,
     } = useAsteroidStore();
 
     const handleNumberInput = (setter) => (e) => {
         const value = e.target.value;
+        
         if (value === '' || Number(value) >= 0) {
             setter(Number(value));
         }
@@ -30,7 +31,9 @@ function AsteroidDetails() {
 
   const handleRunSimulation = () => {
     // setOrbitKey(prev => prev + 1); // remount OrbitSimulation
-    setLaunched(true);
+    setLaunched2(!launched2)
+    console.log(launched2);
+
   };
 
     return (
@@ -135,7 +138,7 @@ function AsteroidDetails() {
                     </div>
                 </form>
             </div>
-            <OrbitSimulation />
+            
         </div>
     );
 }

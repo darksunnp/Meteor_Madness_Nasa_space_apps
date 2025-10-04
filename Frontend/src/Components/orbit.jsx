@@ -4,7 +4,7 @@ import useAsteroidStore from "../other/useAsteroidStore";
 
 export default function OrbitSimulation() {
 
-  const { xdistance, ydistance, zdistance, launched, setLaunched } = useAsteroidStore();
+  const { xdistance, ydistance, zdistance, launched2 } = useAsteroidStore();
   const mountRef = useRef(null);
   const [impactTime, setImpactTime] = useState('—');
   const [impactLoc, setImpactLoc] = useState('—');
@@ -14,8 +14,7 @@ export default function OrbitSimulation() {
 
   useEffect(() => {
 
-    if (!launched) return; // only run when launched is true
-
+   
     console.log("Starting simulation with:", initPos);
 
     // Constants
@@ -139,6 +138,7 @@ export default function OrbitSimulation() {
       trailGeometry.setFromPoints(trailPoints);
       trailLine.geometry = trailGeometry;
     }
+  
 
     // Stars
     function createStars(numStars = 10000) {
@@ -239,14 +239,16 @@ export default function OrbitSimulation() {
         mountRef.current.removeChild(renderer.domElement);
       }
       renderer.dispose();
-      setLaunched(false);
+      
+      
+      
     };
-  }, [xdistance, ydistance, zdistance, launched]);
+  }, [launched2]);
 
   return (
     <div className="relative w-full h-screen">
       <div ref={mountRef} className="w-full h-full" />
-      <div className="absolute top-4 left-4 bg-black bg-opacity-70 text-white p-4 rounded font-mono text-sm">
+      <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white p-4 rounded font-mono text-sm">
         <div className="mb-2">
           <strong>Initial Position:</strong> {initPos.map(p => p.toFixed(2)).join(', ')}
         </div>

@@ -27,8 +27,6 @@ export default function SimpleToggleSidebar() {
 
                 <AsteroidDetails />
 
-                <ImpactAnalysis />
-
             </aside>
 
             <button
