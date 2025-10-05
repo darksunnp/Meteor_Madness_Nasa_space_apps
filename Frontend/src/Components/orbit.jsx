@@ -22,7 +22,7 @@ export default function OrbitSimulation() {
     const dt = 100;
     const massEarth = 5.972e24;
     const radEarth = 6.378;
-    const radAst = size;
+    const radAst = size/1000;
     const scaleFactor = 1e6;
 
     let posAst = [...initPos];
@@ -104,9 +104,13 @@ export default function OrbitSimulation() {
     renderer.domElement.addEventListener('mouseup', onMouseUp);
     renderer.domElement.addEventListener('wheel', onWheel, { passive: false });
 
+    //texture loader
+    const texLoader = new THREE.TextureLoader();
+
     // Earth
     const earthGeo = new THREE.SphereGeometry(radEarth, 64, 32);
-    const earthMat = new THREE.MeshStandardMaterial({ color: 0x2233ff });
+    const earthTex = texLoader.load('/earth_texture.jpg');
+    const earthMat = new THREE.MeshStandardMaterial({ map : earthTex });
     const earth = new THREE.Mesh(earthGeo, earthMat);
     scene.add(earth);
 
@@ -117,7 +121,7 @@ export default function OrbitSimulation() {
 
     // Asteroid
     const asteroidGeo = new THREE.SphereGeometry(radAst, 15, 7);
-    const asteroidMat = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+    const asteroidMat = new THREE.MeshStandardMaterial({ color: 0x3333333 });
     const asteroid = new THREE.Mesh(asteroidGeo, asteroidMat);
     scene.add(asteroid);
 
