@@ -7,15 +7,26 @@ import useAsteroidStore from "../other/useAsteroidStore";
 export default function SimpleToggleSidebar() {
     const [open, setOpen] = useState(true);
      const launched = useAsteroidStore((state) => state.launched);
+     const {crashed}=useAsteroidStore()
 
     useEffect(() => {
     if (launched && open) {
       setOpen(!open)
 
     } else {
-      console.log("Simulation reset.");
+      console.log("simulation reset")
     }
   }, [launched]);
+
+    useEffect(()=>{
+      if (!crashed && !open){
+        setOpen(!open)
+      }
+
+    },[crashed]);
+
+
+
 
 
  

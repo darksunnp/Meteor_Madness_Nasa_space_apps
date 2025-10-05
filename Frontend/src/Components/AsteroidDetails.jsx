@@ -1,11 +1,11 @@
 import useAsteroidStore from '../other/useAsteroidStore';
 import OrbitSimulation from './orbit';
-
+import { useState } from 'react';
 
 function AsteroidDetails() {
     const {
         type, speed, xdistance,ydistance,zdistance, size,
-        setType, setSpeed, setX,setY,setZ, setSize, setLaunched2,launched2,
+        setType, setSpeed, setX,setY,setZ, setSize, setLaunched2,launched2,setOrbitpage,orbitpage
     } = useAsteroidStore();
 
     const handleNumberInput = (setter) => (e) => {
@@ -15,22 +15,31 @@ function AsteroidDetails() {
             setter(Number(value));
         }
     };
-    let onOrbit = false;
+    const [onOrbit, setOnOrbit] = useState(false); 
     function trackpage(){
-        onOrbit=!onOrbit
-        if (onOrbit){
-            document.getElementById("toorbit").classList.remove("hidden");
-            document.getElementById("toglobe").classList.add("hidden");
-            document.getElementById("position").style.display="none"
-            
-            document.getElementById("run_button").innerHTML="Confirm changes"
-        } else {
-            document.getElementById("toorbit").classList.add("hidden");
-            document.getElementById("toglobe").classList.remove("hidden");
-            document.getElementById("position").style.display="block"
-           
-            document.getElementById("run_button").innerHTML="Run simulation"
-        }
+       setOnOrbit(prev => {
+            const next = !prev;
+
+            if (next) {
+                document.getElementById("toorbit").classList.remove("hidden");
+                document.getElementById("toglobe").classList.add("hidden");
+                document.getElementById("position").style.display = "none";
+                document.getElementById("run_button").innerHTML = "Confirm changes";
+            } else {
+                document.getElementById("toorbit").classList.add("hidden");
+                document.getElementById("toglobe").classList.remove("hidden");
+                document.getElementById("position").style.display = "block";
+                document.getElementById("run_button").innerHTML = "Run simulation";
+            }
+
+            return next;
+        });
+        
+    }
+
+    function trackpage2(){
+        setOrbitpage(!orbitpage)
+        console.log(orbitpage)
     }
 
      // const [orbitKey, setOrbitKey] = useState(0);
@@ -124,7 +133,11 @@ function AsteroidDetails() {
                         <button
                             
                             type="button"
-                            onClick={trackpage}
+                                                        onClick={() => {
+    trackpage();
+    trackpage2();
+  }}
+              
                             className="w-full py-2 px-4 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded shadow transition-all duration-300 hover:cursor-pointer"
                         >
                             To asteroid launcher
@@ -136,7 +149,10 @@ function AsteroidDetails() {
                         <a href='#orbit'>
                         <button
                             type="button"
-                            onClick={trackpage}
+                            onClick={() => {
+    trackpage();
+    trackpage2();
+  }}
                             className="w-full py-2 px-4 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded shadow transition-all duration-300 hover:cursor-pointer"
                         >
                             To Orbit

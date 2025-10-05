@@ -5,13 +5,21 @@ import "cesium/Build/Cesium/Widgets/widgets.css";
 import SimpleToggleSidebar from "./Sidebar";
 import useAsteroidStore from "../other/useAsteroidStore";
 import '../index.css';
+import ImpactResultsSidebar from "./impactscreen" 
 
 Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_TOKEN;
 
 export default function MeteorLauncher() {
   const viewerRef = useRef(null);
-  const {size,launched2,speed}=useAsteroidStore ()
+  const {size,launched2,speed,crashed,setCrashed,orbitpage}=useAsteroidStore ()
   const setLaunched = useAsteroidStore((state) => state.setLaunched);
+
+  useEffect(()=>{
+    if (orbitpage){
+      document.getElementById("impactscreen").style.display="none"
+    }
+
+  },[orbitpage])
  
 
   useEffect(() => {
@@ -217,6 +225,7 @@ export default function MeteorLauncher() {
           // Simple light zoom to crater after impact
           setTimeout(() => {
             setLaunched((prev) => !prev);
+            
             viewer.camera.flyTo({
               destination: Cesium.Cartesian3.fromDegrees(lon, lat, 350000),
               orientation: {
@@ -231,6 +240,9 @@ export default function MeteorLauncher() {
           , 800);
           setTimeout(()=>{
             document.getElementById("tutorial_text").style.display="block"
+            setCrashed(!crashed)
+            document.getElementById("impactscreen").style.display="block"
+            
           },3000)
           
           
@@ -280,6 +292,9 @@ export default function MeteorLauncher() {
 
   return (
   <div className="relative w-full h-screen">
+    <div className="absolute z-999 hidden" id="impactscreen">
+  <ImpactResultsSidebar/>
+</div>
   <div ref={viewerRef} style={{ width: "100%", height: "100vh" }} />
   
    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white p-5 rounded font-mono text-sm text-center">

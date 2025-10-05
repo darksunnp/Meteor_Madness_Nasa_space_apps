@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 const useAsteroidStore = create((set) => ({
     type: 'C',
-    speed: '',
+    speed: '10',
     distance: '',
     size: '1',
     damage: '',
@@ -12,6 +12,8 @@ const useAsteroidStore = create((set) => ({
     zdistance: 0,
     launched2:true,
     clicked:true,
+    crashed:false,
+    orbitpage:true,
 
     setType: (type) => set({ type }),
     setSpeed: (speed) => set({ speed }),
@@ -24,6 +26,8 @@ const useAsteroidStore = create((set) => ({
     setZ: (zdistance) => set({ zdistance }),
     setLaunched2: (launched2)=>set({launched2}),
     setClicked:(clicked)=>set({clicked}),
+    setCrashed:(crashed)=>set({crashed}),
+    setOrbitpage:(orbitpage)=>set({orbitpage}),
 
     runSimulation: () =>
         set((state) => {
