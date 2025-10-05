@@ -21,9 +21,15 @@ function AsteroidDetails() {
         if (onOrbit){
             document.getElementById("toorbit").classList.remove("hidden");
             document.getElementById("toglobe").classList.add("hidden");
+            document.getElementById("position").style.display="none"
+            
+            document.getElementById("run_button").innerHTML="Confirm changes"
         } else {
             document.getElementById("toorbit").classList.add("hidden");
             document.getElementById("toglobe").classList.remove("hidden");
+            document.getElementById("position").style.display="block"
+           
+            document.getElementById("run_button").innerHTML="Run simulation"
         }
     }
 
@@ -63,7 +69,7 @@ function AsteroidDetails() {
                             className="w-full p-2 rounded bg-neutral-700 text-neutral-100 border border-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-500"
                         />
                     </div>
-                    <div>
+                    <div id='position'>
                         <label className="block text-neutral-300 font-semibold mb-1">Position (x,y,z)</label>
 
                         <div className='grid grid-cols-3 gap-2'>
@@ -92,7 +98,7 @@ function AsteroidDetails() {
                        
                     </div>
                     <div>
-                        <label className="block text-neutral-300 font-semibold mb-1">Size (m)</label>
+                        <label className="block text-neutral-300 font-semibold mb-1">Size (Km)</label>
                         <input
                             type="number"
                             min="0"
@@ -101,9 +107,10 @@ function AsteroidDetails() {
                             className="w-full p-2 rounded bg-neutral-700 text-neutral-100 border border-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-500"
                         />
                     </div>
-                    <div className="pt-4">
+                    <div className="pt-4" >
                        
                         <button
+                            id='run_button'
                             type="button"
                              onClick={handleRunSimulation} 
                             className="w-full py-2 px-4 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded shadow transition-all duration-300 hover:cursor-pointer"
@@ -112,9 +119,10 @@ function AsteroidDetails() {
                         </button>
                        
                     </div>
-                     <div className="pt-4" id="toglobe">
+                     <div className="pt-4" id="toglobe" >
                         <a href='#globe'>
                         <button
+                            
                             type="button"
                             onClick={trackpage}
                             className="w-full py-2 px-4 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded shadow transition-all duration-300 hover:cursor-pointer"

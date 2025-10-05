@@ -4,7 +4,7 @@ import useAsteroidStore from "../other/useAsteroidStore";
 
 export default function OrbitSimulation() {
 
-  const { xdistance, ydistance, zdistance, launched2 } = useAsteroidStore();
+  const { xdistance, ydistance, zdistance, launched2,size } = useAsteroidStore();
   const mountRef = useRef(null);
   const [impactTime, setImpactTime] = useState('—');
   const [impactLoc, setImpactLoc] = useState('—');
@@ -22,7 +22,7 @@ export default function OrbitSimulation() {
     const dt = 100;
     const massEarth = 5.972e24;
     const radEarth = 6.378;
-    const radAst = 0.5;
+    const radAst = size;
     const scaleFactor = 1e6;
 
     let posAst = [...initPos];

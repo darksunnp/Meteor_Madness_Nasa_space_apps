@@ -4,12 +4,13 @@ import * as Cesium from "cesium";
 import "cesium/Build/Cesium/Widgets/widgets.css";
 import SimpleToggleSidebar from "./Sidebar";
 import useAsteroidStore from "../other/useAsteroidStore";
+import '../index.css';
 
 Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_TOKEN;
 
 export default function MeteorLauncher() {
   const viewerRef = useRef(null);
-  
+  const {size,launched2,speed}=useAsteroidStore ()
   const setLaunched = useAsteroidStore((state) => state.setLaunched);
  
 
@@ -36,7 +37,7 @@ export default function MeteorLauncher() {
     });
 
     // Create crater on impact
-    function createCrater(lon, lat, radius = 50000) {
+    function createCrater(lon, lat, radius =50000) {
       viewer.entities.add({
         position: Cesium.Cartesian3.fromDegrees(lon, lat, 0),
         ellipse: {
@@ -52,7 +53,7 @@ export default function MeteorLauncher() {
     function launchMeteor(lon, lat) {
       const startHeight = 1000000; // 1000 km
       let height = startHeight;
-      let speed = 6000; // meters per frame (will increase with atmospheric entry)
+      let velocity = speed*1000; // meters per frame (will increase with atmospheric entry)
       const trailPoints = []; // Store trail history for realistic fading
       const maxTrailPoints = 60;
 
@@ -61,7 +62,7 @@ export default function MeteorLauncher() {
         position: Cesium.Cartesian3.fromDegrees(lon, lat, height),
         model: {
           uri: './asteroid_1.glb', // Path to your GLB file
-          scale: 12000, // Initial scale
+          scale: size*1000, // Initial scale
          
           
           
@@ -177,7 +178,7 @@ export default function MeteorLauncher() {
 
       // Animate meteor fall with enhanced trail
       function animate() {
-        height -= speed;
+        height -= velocity;
 
         // Add current position to trail history
         const currentPos = Cesium.Cartesian3.fromDegrees(lon, lat, height);
@@ -196,6 +197,7 @@ export default function MeteorLauncher() {
           
           const impactPosition = Cesium.Cartesian3.fromDegrees(lon, lat, 0);
           createCrater(lon, lat);
+          
           
           // Add impact flash effect
           const flash = viewer.entities.add({
@@ -224,14 +226,20 @@ export default function MeteorLauncher() {
               },
               duration: 2.0
             });
-          }, 800);
+            
+          }
+          , 800);
+          setTimeout(()=>{
+            document.getElementById("tutorial_text").style.display="block"
+          },3000)
+          
           
         } else {
           meteor.position = currentPos;
           
           // Increase speed as it enters atmosphere (realistic physics)
           if (height < 80000) {
-            speed += 2;
+            velocity += 2;
           }
           
           requestAnimationFrame(animate);
@@ -254,6 +262,7 @@ export default function MeteorLauncher() {
         const longitude = Cesium.Math.toDegrees(cartographic.longitude);
         const latitude = Cesium.Math.toDegrees(cartographic.latitude);
         launchMeteor(longitude, latitude);
+        document.getElementById("tutorial_text").style.display="none"
         
       
         
@@ -267,11 +276,19 @@ export default function MeteorLauncher() {
       viewer.destroy();
 
     };
-  }, );
+  },[launched2] );
 
   return (
-  <div>
+  <div className="relative w-full h-screen">
   <div ref={viewerRef} style={{ width: "100%", height: "100vh" }} />
-    </div>
+  
+   <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white p-5 rounded font-mono text-sm text-center">
+  <div className="mb-2" id="tutorial_text">
+    <strong >Click anywhere on the earth to launch the asteroid</strong>
+  </div>
+</div>
+
+        
+      </div>
   );
 }
