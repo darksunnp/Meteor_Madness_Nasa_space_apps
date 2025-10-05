@@ -59,7 +59,6 @@ const useAsteroidStore = create((set, get) => ({
     return damage;
   },
 
-  // --- fetch asteroid list once (cached) ---
   fetchAsteroids: async () => {
     set({ loadingAsteroids: true });
     try {

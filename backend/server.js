@@ -84,7 +84,7 @@ app.get('/api/asteroids/:name', (req, res) => {
 
   res.json({
     name: asteroid.name,
-    speed: asteroid.relativeVelocity,  // km/s
+    speed: asteroid.relativeVelocity,  
     size,
     position: { x: 100, y: 50, z: 0 }, // constant position
     orbitBody: asteroid.orbitBody,

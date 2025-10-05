@@ -14,7 +14,6 @@ function AsteroidDetails() {
     speed, xdistance, ydistance, zdistance, size,
     setSpeed, setX, setY, setZ, setSize,
 
-    // simulation
     runSimulation,
     launched2, setLaunched2
   } = useAsteroidStore();
